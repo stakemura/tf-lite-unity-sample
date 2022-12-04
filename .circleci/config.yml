@@ -33,7 +33,7 @@ jobs:
             python3 build_tflite.py -macos
       - run:
           name: Compress Artifacts
-          command: tar -cvzf macOS.tar Packages/com.github.asus4.tflite/Plugins/macOS
+          command: tar -cvzf macOS.tar --no-same-owner --no-same-permissions Packages/com.github.asus4.tflite/Plugins/macOS
       - store_artifacts:
           path: macOS.tar
   build-windows:
@@ -67,7 +67,7 @@ jobs:
             python build_tflite.py -windows
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Windows.tar Packages/com.github.asus4.tflite/Plugins/Windows
+          command: tar -cvzf Windows.tar --no-same-owner --no-same-permissions Packages/com.github.asus4.tflite/Plugins/Windows
       - store_artifacts:
           path: Windows.tar
   build-linux:
@@ -103,7 +103,7 @@ jobs:
             python3 build_tflite.py -linux
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Linux.tar Packages/com.github.asus4.tflite/Plugins/Linux
+          command: tar -cvzf Linux.tar --no-same-owner --no-same-permissions Packages/com.github.asus4.tflite/Plugins/Linux
       - store_artifacts:
           path: Linux.tar
   build-ios:
@@ -137,7 +137,7 @@ jobs:
             python3 build_tflite.py -ios
       - run:
           name: Compress Artifacts
-          command: tar -cvzf iOS.tar Packages/com.github.asus4.tflite/Plugins/iOS
+          command: tar -cvzf iOS.tar --no-same-owner --no-same-permissions Packages/com.github.asus4.tflite/Plugins/iOS
       - store_artifacts:
           path: iOS.tar
   build-android:
@@ -176,7 +176,7 @@ jobs:
             python3 build_tflite.py -android
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Android.tar Packages/com.github.asus4.tflite/Plugins/Android
+          command: tar -cvzf Android.tar --no-same-owner --no-same-permissions Packages/com.github.asus4.tflite/Plugins/Android
       - store_artifacts:
           path: Android.tar
 
