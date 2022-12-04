@@ -4,14 +4,6 @@ orbs:
   win: circleci/windows@5.0
   android: circleci/android@2.1.2
 
-parameters:
-  tf-repository:
-    type: string
-    default: "git@github.com:tensorflow/tensorflow.git"
-  tf-branch:
-    type: string
-    default: "v2.10.0"
-
 jobs:
   build-mac:
     macos:
@@ -28,8 +20,13 @@ jobs:
             pip3 install numpy
       - run:
           name: Download TensorFlow
+          working_directory: ../tensorflow 
           command: |
-            git clone --depth 1 << pipeline.parameters.tf-repository >> --branch << pipeline.parameters.tf-branch >> ../tensorflow
+            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+      - run:
+          name: Patch TensorFlow
+          command: |
+            patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for macOS
           command: |
@@ -49,13 +46,22 @@ jobs:
           command: |
             choco install bazelisk -y
       - run:
+          name: Install patch
+          command: |
+            choco install patch -y
+      - run:
           name: Install NumPy
           command: |
             pip install numpy
       - run:
           name: Download TensorFlow
+          working_directory: ../tensorflow 
           command: |
-            git clone --depth 1 << pipeline.parameters.tf-repository >> --branch << pipeline.parameters.tf-branch >> ../tensorflow
+            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+      - run:
+          name: Patch TensorFlow
+          command: |
+            patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for Windows
           command: |
@@ -85,8 +91,13 @@ jobs:
             pip3 install numpy
       - run:
           name: Download TensorFlow
+          working_directory: ../tensorflow 
           command: |
-            git clone --depth 1 << pipeline.parameters.tf-repository >> --branch << pipeline.parameters.tf-branch >> ../tensorflow
+            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+      - run:
+          name: Patch TensorFlow
+          command: |
+            patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for Linux
           command: |
@@ -111,8 +122,13 @@ jobs:
             pip3 install numpy
       - run:
           name: Download TensorFlow
+          working_directory: ../tensorflow 
           command: |
-            git clone --depth 1 << pipeline.parameters.tf-repository >> --branch << pipeline.parameters.tf-branch >> ../tensorflow
+            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+      - run:
+          name: Patch TensorFlow
+          command: |
+            patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for iOS
           command: |
@@ -144,14 +160,19 @@ jobs:
             pip3 install numpy
       - run:
           name: Download TensorFlow
+          working_directory: ../tensorflow 
           command: |
-            git clone --depth 1 << pipeline.parameters.tf-repository >> --branch << pipeline.parameters.tf-branch >> ../tensorflow
+            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+      - run:
+          name: Patch TensorFlow
+          command: |
+            patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for Android
           command: |
             # For gpu-api-delegate branch
-            # sed -i -e 's/libtensorflowlite_gpu_delegate.so/libtensorflowlite_gpu_api_delegate.so/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD 
-            # sed -i -e 's/\":delegate\"/\"\/\/tensorflow\/lite\/delegates\/gpu\/cl:gpu_api_delegate\"/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD
+            sed -i -e 's/libtensorflowlite_gpu_delegate.so/libtensorflowlite_gpu_api_delegate.so/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD 
+            sed -i -e 's/\":delegate\"/\"\/\/tensorflow\/lite\/delegates\/gpu\/cl:gpu_api_delegate\"/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD
             export ANDROID_SDK_HOME=$ANDROID_HOME
             python3 build_tflite.py -android
       - run:
