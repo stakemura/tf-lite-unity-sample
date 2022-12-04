@@ -46,20 +46,19 @@ jobs:
           command: |
             choco install bazelisk -y
       - run:
-          name: Install patch
-          command: |
-            choco install patch -y
-      - run:
           name: Install NumPy
           command: |
             pip install numpy
       - run:
           name: Download TensorFlow
           working_directory: ../tensorflow 
+          shell: bash.exe
           command: |
-            curl -LSs https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz | tar xz --strip=1 -C .
+            curl -L https://github.com/tensorflow/tensorflow/archive/af1d5bc4fbb66d9e6cc1cf89503014a99233583b.tar.gz -o tensorflow.tar.gz
+            tar xz -f tensorflow.tar.gz --strip=1 -C .
       - run:
           name: Patch TensorFlow
+          shell: bash.exe
           command: |
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
