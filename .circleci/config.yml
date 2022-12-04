@@ -8,8 +8,6 @@ jobs:
   build-mac:
     macos:
       xcode: 12.5.1
-    environment:
-      ARTIFACT_PATH: Packages/com.github.asus4.tflite/Plugins/macOS
     steps:
       - checkout
       - run:
@@ -32,19 +30,15 @@ jobs:
       - run:
           name: Build TensorFlow Lite for macOS
           command: |
-            rm -rf $ARTIFACT_PATH
-            mkdir -p $ARTIFACT_PATH
             python3 build_tflite.py -macos
       - run:
           name: Compress Artifacts
-          command: tar -cvzf macOS.tar --no-same-owner $ARTIFACT_PATH
+          command: tar -cvzf macOS.tar --no-same-owner Packages/com.github.asus4.tflite/Plugins/macOS
       - store_artifacts:
           path: macOS.tar
   build-windows:
     executor:
       name: win/default
-    environment:
-      ARTIFACT_PATH: Packages/com.github.asus4.tflite/Plugins/macOS
     steps:
       - checkout
       - run:
@@ -70,19 +64,15 @@ jobs:
       - run:
           name: Build TensorFlow Lite for Windows
           command: |
-            rm -rf $ARTIFACT_PATH
-            mkdir -p $ARTIFACT_PATH
             python build_tflite.py -windows
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Windows.tar --no-same-owner $ARTIFACT_PATH
+          command: tar -cvzf Windows.tar --no-same-owner Packages/com.github.asus4.tflite/Plugins/Windows
       - store_artifacts:
           path: Windows.tar
   build-linux:
     machine:
       image: ubuntu-2004:202010-01
-    environment:
-      ARTIFACT_PATH: Packages/com.github.asus4.tflite/Plugins/Linux
     steps:
       - checkout
       - run:
@@ -106,8 +96,6 @@ jobs:
       - run:
           name: Patch TensorFlow
           command: |
-            rm -rf $ARTIFACT_PATH
-            mkdir -p $ARTIFACT_PATH
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for Linux
@@ -115,14 +103,12 @@ jobs:
             python3 build_tflite.py -linux
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Linux.tar --no-same-owner $ARTIFACT_PATH
+          command: tar -cvzf Linux.tar --no-same-owner Packages/com.github.asus4.tflite/Plugins/Linux
       - store_artifacts:
           path: Linux.tar
   build-ios:
     macos:
       xcode: 12.5.1
-    environment:
-      ARTIFACT_PATH: Packages/com.github.asus4.tflite/Plugins/iOS
     steps:
       - checkout
       - run:
@@ -141,8 +127,6 @@ jobs:
       - run:
           name: Patch TensorFlow
           command: |
-            rm -rf $ARTIFACT_PATH
-            mkdir -p $ARTIFACT_PATH
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for iOS
@@ -153,14 +137,13 @@ jobs:
             python3 build_tflite.py -ios
       - run:
           name: Compress Artifacts
-          command: tar -cvzf iOS.tar --no-same-owner $ARTIFACT_PATH
+          command: tar -cvzf iOS.tar --no-same-owner Packages/com.github.asus4.tflite/Plugins/iOS
       - store_artifacts:
           path: iOS.tar
   build-android:
     machine:
       image: android:202102-01
     environment:
-      ARTIFACT_PATH: Packages/com.github.asus4.tflite/Plugins/Android
       ANDROID_SDK_API_LEVEL: 23
       ANDROID_NDK_API_LEVEL: 21
       ANDROID_BUILD_TOOLS_VERSION: 30.0.3
@@ -182,8 +165,6 @@ jobs:
       - run:
           name: Patch TensorFlow
           command: |
-            rm -rf $ARTIFACT_PATH
-            mkdir -p $ARTIFACT_PATH
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
       - run:
           name: Build TensorFlow Lite for Android
@@ -195,7 +176,7 @@ jobs:
             python3 build_tflite.py -android
       - run:
           name: Compress Artifacts
-          command: tar -cvzf Android.tar --no-same-owner $ARTIFACT_PATH
+          command: tar -cvzf Android.tar --no-same-owner Packages/com.github.asus4.tflite/Plugins/Android
       - store_artifacts:
           path: Android.tar
 
