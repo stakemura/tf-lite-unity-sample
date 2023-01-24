@@ -95,8 +95,8 @@ def build_ios():
     run_cmd('bazel build -c opt --config=ios_arm64 --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCMetal_framework')
     unzip('bazel-bin/tensorflow/lite/ios/TensorFlowLiteCMetal_framework.zip', 'iOS')
     # CoreML Delegate
-    run_cmd('bazel build -c opt --config=ios_arm64 --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework')
-    unzip('bazel-bin/tensorflow/lite/ios/TensorFlowLiteCCoreML_framework.zip', 'iOS')
+    # run_cmd('bazel build -c opt --config=ios_arm64 --cxxopt=--std=c++17 //tensorflow/lite/ios:TensorFlowLiteCCoreML_framework')
+    # unzip('bazel-bin/tensorflow/lite/ios/TensorFlowLiteCCoreML_framework.zip', 'iOS')
     # SelectOps Delegate
     # run_cmd('bazel build -c opt --config=ios --ios_multi_cpus=armv7,arm64,x86_64 //tensorflow/lite/ios:TensorFlowLiteSelectTfOps_framework')
     # unzip('bazel-bin/tensorflow/lite/ios/TensorFlowLiteSelectTfOps_framework.zip', 'iOS')
@@ -111,6 +111,12 @@ def build_android(enable_xnnpack = True):
     run_cmd('bazel build -c opt --fat_apk_cpu=arm64-v8a,armeabi-v7a,x86_64 //tensorflow/lite/java:tensorflow-lite-gpu')
     copy('bazel-bin/tensorflow/lite/java/tensorflow-lite-gpu.aar', 'Android')
 
+    # GL Delegate
+    run_cmd('bazel build -c opt --config=android_arm64 --copt -Os --copt -DTFLITE_GPU_BINARY_RELEASE --copt -fvisibility=hidden --linkopt -s --strip always //tensorflow/lite/delegates/gpu:libtensorflowlite_gpu_gl.so')
+    copy('bazel-bin/tensorflow/lite/delegates/gpu/libtensorflowlite_gpu_gl.so', 'Android/arm64-v8a')
+    run_cmd('bazel build -c opt --config=android_arm --copt -Os --copt -DTFLITE_GPU_BINARY_RELEASE --copt -fvisibility=hidden --linkopt -s --strip always //tensorflow/lite/delegates/gpu:libtensorflowlite_gpu_gl.so')
+    copy('bazel-bin/tensorflow/lite/delegates/gpu/libtensorflowlite_gpu_gl.so', 'Android/armeabi-v7a')
+    
     # GPU API Delegate
     run_cmd('bazel build -c opt --config=android_arm64 --copt -Os --copt -DTFLITE_GPU_BINARY_RELEASE --copt -fvisibility=hidden --linkopt -s --strip always //tensorflow/lite/delegates/gpu:libtensorflowlite_gpu_api_delegate.so')
     copy('bazel-bin/tensorflow/lite/delegates/gpu/libtensorflowlite_gpu_api_delegate.so', 'Android/arm64-v8a')
