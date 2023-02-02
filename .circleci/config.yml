@@ -166,12 +166,14 @@ jobs:
           name: Patch TensorFlow
           command: |
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
+            patch -d ../tensorflow -p1 < third_party/gpudelegate.diff
+            cp -rf third_party/tensorflow ../tensorflow/
       - run:
           name: Build TensorFlow Lite for Android
           command: |
             # For gpu-api-delegate branch
-            sed -i -e 's/libtensorflowlite_gpu_delegate.so/libtensorflowlite_gpu_api_delegate.so/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD 
-            sed -i -e 's/\":delegate\"/\"\/\/tensorflow\/lite\/delegates\/gpu\/cl:gpu_api_delegate\"/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD
+            # sed -i -e 's/libtensorflowlite_gpu_delegate.so/libtensorflowlite_gpu_api_delegate.so/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD 
+            # sed -i -e 's/\":delegate\"/\"\/\/tensorflow\/lite\/delegates\/gpu\/cl:gpu_api_delegate\"/' ../tensorflow/tensorflow/lite/delegates/gpu/BUILD
             export ANDROID_SDK_HOME=$ANDROID_HOME
             python3 build_tflite.py -android
       - run:
