@@ -167,7 +167,6 @@ jobs:
           command: |
             patch -d ../tensorflow -p1 < third_party/mediapipe_custom_ops.diff
             patch -d ../tensorflow -p1 < third_party/gpudelegate.diff
-            cp -rf third_party/tensorflow ../tensorflow/
       - run:
           name: Build TensorFlow Lite for Android
           command: |
